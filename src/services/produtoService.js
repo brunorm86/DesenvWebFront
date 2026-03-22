@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // ATENÇÃO: substitua a porta abaixo pela porta onde a SUA API está rodando.
 // Verifique o terminal do dotnet run para confirmar.
-const API_URL = 'http://localhost:5021/api/produtos';
+const API_URL = 'http://localhost:8080/api/produtos';
 
 const api = axios.create({
     baseURL: API_URL,
