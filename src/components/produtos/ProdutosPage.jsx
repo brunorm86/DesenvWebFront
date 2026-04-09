@@ -7,6 +7,8 @@ import {
     atualizarProduto,
     deletarProduto,
 } from '../../services/produtoService';
+// 1. Adicione o import do service:
+import { getCategorias } from '../../services/categoriaService';
 import { useToast } from '../../hooks/useToast';
 import ProdutoTable from './ProdutoTable';
 import ProdutoFormModal from './ProdutoFormModal';
@@ -23,6 +25,9 @@ function ProdutosPage() {
     const [produtoEditando, setProdutoEditando] = useState(null);
     const [produtoDeletando, setProdutoDeletando] = useState(null);
 
+    // 2. Adicione o estado para categorias:
+    const [categorias, setCategorias] = useState([]);
+
     const toast = useToast();
 
     // Carrega produtos ao montar o componente
@@ -30,6 +35,7 @@ function ProdutosPage() {
         carregarProdutos();
     }, []);
 
+    /*
     const carregarProdutos = async () => {
         try {
             setLoading(true);
@@ -38,6 +44,25 @@ function ProdutosPage() {
         } catch (error) {
             toast.error('Não foi possível carregar os produtos. Verifique se a API está rodando.');
             console.error('Erro ao carregar produtos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+*/
+    const carregarProdutos = async () => {
+        try {
+            setLoading(true);
+            const [dadosProdutos, dadosCategorias] = await Promise.all([
+                getProdutos(),
+                // .catch(() => []) evita que a página quebre se o endpoint de categorias falhar.
+                // Simplesmente trata como "sem categorias" — o seletor não aparece.
+                getCategorias().catch(() => []),
+            ]);
+            setProdutos(dadosProdutos);
+            setCategorias(dadosCategorias);
+        } catch (error) {
+            toast.error('Não foi possível carregar os dados.');
+            console.error('Erro:', error);
         } finally {
             setLoading(false);
         }
@@ -146,14 +171,13 @@ function ProdutosPage() {
             )}
 
             {/* Modal de formulário (criar/editar) */}
+
             <ProdutoFormModal
                 isOpen={isFormModalOpen}
-                onClose={() => {
-                    setIsFormModalOpen(false);
-                    setProdutoEditando(null);
-                }}
+                onClose={() => { setIsFormModalOpen(false); setProdutoEditando(null); }}
                 produtoEditando={produtoEditando}
                 onSalvar={handleSalvar}
+                categorias={categorias}  // ← NOVA PROP
             />
 
             {/* Diálogo de confirmação de exclusão */}
