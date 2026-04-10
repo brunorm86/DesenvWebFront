@@ -1,7 +1,9 @@
 // src/components/produtos/ProdutoTable.jsx
-import { Search, Pencil, Trash2, PackageOpen } from 'lucide-react';
+// No topo do arquivo, adicione FileText aos imports do lucide-react:
+import { Search, Pencil, Trash2, PackageOpen, FileText } from 'lucide-react';
 
-function ProdutoTable({ produtos, searchTerm, onSearchChange, onEditar, onDeletar }) {
+// Na desestruturação de props da função, adicione onVerDetalhes:
+function ProdutoTable({ produtos, searchTerm, onSearchChange, onEditar, onDeletar, onVerDetalhes }) {
     // Filtra os produtos pelo termo de busca (nome ou descrição)
     // 1. Na função de filtro, adicione a busca por categoria:
     const produtosFiltrados = produtos.filter((p) => {
@@ -109,6 +111,14 @@ function ProdutoTable({ produtos, searchTerm, onSearchChange, onEditar, onDeleta
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center justify-center gap-2">
+                                        {/* Na célula de ações (<td>), adicione ANTES dos botões de Editar e Deletar: */}
+                                        <button
+                                            onClick={() => onVerDetalhes(produto)}
+                                            title="Ver detalhes técnicos"
+                                            className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                                        >
+                                            <FileText className="w-4 h-4" />
+                                        </button>
                                         <button
                                             onClick={() => onEditar(produto)}
                                             title="Editar produto"

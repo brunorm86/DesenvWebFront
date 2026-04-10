@@ -1,4 +1,5 @@
 // src/components/produtos/ProdutosPage.jsx
+
 import { useState, useEffect } from 'react';
 import { Plus, RefreshCw, ShoppingCart } from 'lucide-react';
 import {
@@ -13,6 +14,8 @@ import { useToast } from '../../hooks/useToast';
 import ProdutoTable from './ProdutoTable';
 import ProdutoFormModal from './ProdutoFormModal';
 import ProdutoDeleteDialog from './ProdutoDeleteDialog';
+// Adicione o import do DetalheModal:
+import DetalheModal from './DetalheModal';
 
 function ProdutosPage() {
     const [produtos, setProdutos] = useState([]);
@@ -22,6 +25,9 @@ function ProdutosPage() {
     // Controle dos modais
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    // Junto com os outros estados, adicione:
+    const [isDetalheModalOpen, setIsDetalheModalOpen] = useState(false);
+    const [produtoDetalhes, setProdutoDetalhes] = useState(null);
     const [produtoEditando, setProdutoEditando] = useState(null);
     const [produtoDeletando, setProdutoDeletando] = useState(null);
 
@@ -119,6 +125,12 @@ function ProdutosPage() {
         }
     };
 
+    // Handler que abre o modal de detalhes para um produto específico
+    const handleVerDetalhes = (produto) => {
+        setProdutoDetalhes(produto);  // Define qual produto terá detalhes visualizados
+        setIsDetalheModalOpen(true);  // Abre o modal
+    };
+
     return (
         <div className="p-6">
             {/* Header da página */}
@@ -167,6 +179,7 @@ function ProdutosPage() {
                     onSearchChange={setSearchTerm}
                     onEditar={handleEditar}
                     onDeletar={handleConfirmarDelete}
+                    onVerDetalhes={handleVerDetalhes}
                 />
             )}
 
@@ -189,6 +202,15 @@ function ProdutosPage() {
                 }}
                 onConfirm={handleDeletar}
                 produto={produtoDeletando}
+            />
+            {/* Modal de Detalhes do Produto (relacionamento 1-para-1) */}
+            <DetalheModal
+                isOpen={isDetalheModalOpen}
+                onClose={() => {
+                    setIsDetalheModalOpen(false);
+                    setProdutoDetalhes(null);
+                }}
+                produto={produtoDetalhes}
             />
         </div>
     );
